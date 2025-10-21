@@ -1,0 +1,42 @@
+[
+  {
+    "id": "f8760c4c-2e34-4953-b6a7-c75b0a14223e",
+    "aluno": {
+      "id": "1",
+      "nome": "Rhyan"
+    },
+    "atividade": {
+      "nome": "Teste"
+    },
+    "cargaHoraria": "5",
+    "data": "2025-12-12",
+    "responsavel": {
+      "nome": "Rhan"
+    },
+    "status": "EMITIDO",
+    "criadoEm": "2025-10-16T18:12:18.901Z",
+    "hash": "3770b00d4d860b40edabc9176c83946e3715d1ada71300ae5bbacdecb6969643",
+    "urlDownload": "/api/certificados/f8760c4c-2e34-4953-b6a7-c75b0a14223e/download",
+    "urlVerificacao": "/certificados/verificar/3770b00d4d860b40edabc9176c83946e3715d1ada71300ae5bbacdecb6969643"
+  },
+  {
+    "id": "9fd07378-5e4c-4031-8961-cffe4f05208f",
+    "aluno": {
+      "id": "2",
+      "nome": "a"
+    },
+    "atividade": {
+      "nome": "teste"
+    },
+    "cargaHoraria": "2",
+    "data": "2025-12-12",
+    "responsavel": {
+      "nome": "Rhan"
+    },
+    "status": "EMITIDO",
+    "criadoEm": "2025-10-21T19:33:32.079Z",
+    "hash": "5918f4eef59bbb6575f017626569c39f2625d4a173b391f9d66004226c2fcd96",
+    "urlDownload": "/api/certificados/9fd07378-5e4c-4031-8961-cffe4f05208f/download",
+    "urlVerificacao": "/certificados/verificar/5918f4eef59bbb6575f017626569c39f2625d4a173b391f9d66004226c2fcd96"
+  }
+]
