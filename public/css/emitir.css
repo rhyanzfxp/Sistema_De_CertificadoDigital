@@ -1,0 +1,168 @@
+body {
+  background: radial-gradient(circle at 20% 20%, #0a0f1a, #000);
+  color: #e0e0e0;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  height: 100vh;
+}
+
+/* Header fixo igual certificados */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(10, 20, 30, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 234, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  z-index: 10;
+}
+
+.topbar-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #00eaff;
+  font-size: 22px;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+  letter-spacing: 1px;
+}
+
+.btn-nav {
+  background: transparent;
+  border: 1px solid #00eaff;
+  color: #00eaff;
+  border-radius: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+}
+
+.btn-nav:hover {
+  background: #00eaff;
+  color: #000;
+  box-shadow: 0 0 20px #00eaff;
+}
+
+.content {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Card principal */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
+  padding: 30px;
+  color: #fff;
+  width: 90%;
+  max-width: 900px;
+}
+
+label {
+  color: #a9bcd0;
+}
+
+.form-control {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.form-control:focus {
+  border-color: #00eaff;
+  box-shadow: 0 0 8px #00eaff;
+}
+
+.btn-success {
+  background-color: #00eaff;
+  border: none;
+  color: #000;
+  font-weight: 600;
+  box-shadow: 0 0 15px #00eaff;
+}
+
+.btn-success:hover {
+  box-shadow: 0 0 25px #00eaff;
+  transform: translateY(-2px);
+}
+
+/* Flatpickr tema dark com contraste */
+.flatpickr-calendar {
+  background: #0a1625 !important;
+  color: #fff !important;
+  border: 1px solid rgba(0, 234, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.4);
+}
+
+.flatpickr-day {
+  color: #e0e0e0 !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: #00eaff !important;
+  color: #000 !important;
+  box-shadow: 0 0 10px #00eaff !important;
+}
+
+.flatpickr-months, .flatpickr-weekdays {
+  color: #00eaff !important;
+}
+
+/* ============ FLATPICKR DARK THEME AJUSTADO ============ */
+.flatpickr-calendar {
+  background: #0d1624 !important;
+  border: 1px solid rgba(0, 234, 255, 0.5) !important;
+  box-shadow: 0 0 25px rgba(0, 234, 255, 0.4);
+  color: #fff !important;
+  border-radius: 10px;
+  z-index: 9999 !important;
+}
+
+.flatpickr-day {
+  color: #e0e0e0 !important;
+  transition: all 0.2s ease;
+}
+
+.flatpickr-day:hover {
+  background: rgba(0, 234, 255, 0.3) !important;
+  color: #fff !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.today {
+  background: #00eaff !important;
+  color: #000 !important;
+  box-shadow: 0 0 10px #00eaff !important;
+}
+
+.flatpickr-months,
+.flatpickr-weekdays {
+  color: #00eaff !important;
+}
+
+.flatpickr-prev-month svg, 
+.flatpickr-next-month svg {
+  fill: #00eaff !important;
+}
+
+.flatpickr-time {
+  background: rgba(0, 234, 255, 0.05);
+  border-top: 1px solid rgba(0, 234, 255, 0.2);
+  color: #00eaff;
+}
+
+.flatpickr-calendar { z-index: 10000 !important; }
