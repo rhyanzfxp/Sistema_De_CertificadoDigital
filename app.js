@@ -36,28 +36,105 @@ function validatePayload(p){
   return null;
 }
 
-function gerarPDF(certMeta, filePath){
-  return new Promise((resolve, reject)=>{
-    const doc = new PDFDocument({size: 'A4', margin: 50});
+function gerarPDF(certMeta, filePath) {
+  return new Promise((resolve, reject) => {
+    const PDFDocument = require("pdfkit");
+    const fs = require("fs");
+    const doc = new PDFDocument({ size: "A4", margin: 0 });
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
 
-    doc.fontSize(20).text('Certificado Digital', {align: 'center'});
-    doc.moveDown();
-    doc.fontSize(14).text(`Nome: ${certMeta.aluno.nome}`);
-    doc.text(`Atividade: ${certMeta.atividade.nome}`);
-    doc.text(`Carga Horária: ${certMeta.cargaHoraria} horas`);
-    doc.text(`Data: ${certMeta.data}`);
-    doc.moveDown();
-    doc.text(`Responsável: ${certMeta.responsavel.nome}`);
-    doc.moveDown();
-    doc.text(`ID do Certificado: ${certMeta.id}`);
+    // === Fundo gradiente dark ===
+    const grad = doc.linearGradient(0, 0, 0, 842);
+    grad.stop(0, "#050b18").stop(1, "#0a182a");
+    doc.rect(0, 0, 595, 842).fill(grad);
+
+    // === Borda neon azul ===
+    doc.save();
+    doc.lineWidth(3)
+      .strokeColor("#00eaff")
+      .roundedRect(20, 20, 555, 802, 12)
+      .stroke();
+    doc.restore();
+
+    // === Título principal ===
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(30)
+      .fillColor("#00eaff")
+      .text("CERTIFICADO DIGITAL", 0, 120, { align: "center" })
+      .moveDown(2);
+
+    // === Texto de corpo ===
+    doc
+      .font("Helvetica")
+      .fontSize(14)
+      .fillColor("#e0e0e0")
+      .text("Certificamos que:", { align: "center" })
+      .moveDown(1);
+
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(20)
+      .fillColor("#ffffff")
+      .text(certMeta.aluno.nome, { align: "center" })
+      .moveDown(1);
+
+    doc
+      .font("Helvetica")
+      .fontSize(14)
+      .fillColor("#e0e0e0")
+      .text(`concluiu com êxito a atividade:`, { align: "center" })
+      .moveDown(0.5)
+      .font("Helvetica-Bold")
+      .fillColor("#00eaff")
+      .text(certMeta.atividade.nome, { align: "center" })
+      .moveDown(1);
+
+    doc
+      .font("Helvetica")
+      .fillColor("#e0e0e0")
+      .text(
+        `com carga horária de ${certMeta.cargaHoraria} horas, realizada em ${certMeta.data}.`,
+        { align: "center" }
+      )
+      .moveDown(3);
+
+    // === Assinatura digital ===
+    const centerX = doc.page.width / 2 - 100;
+    doc
+      .moveTo(centerX, doc.y)
+      .lineTo(centerX + 200, doc.y)
+      .strokeColor("#00eaff")
+      .lineWidth(1)
+      .stroke();
+
+    doc
+      .moveDown(0.5)
+      .font("Helvetica")
+      .fontSize(12)
+      .fillColor("#a0a0a0")
+      .text(certMeta.responsavel.nome, { align: "center" })
+      .text("Responsável pela Emissão", { align: "center" })
+      .moveDown(2);
+
+    // === Rodapé com hash / ID ===
+    doc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor("#00eaff")
+      .text(`ID do Certificado: ${certMeta.id}`, 0, 740, { align: "center" })
+      .moveDown(0.3)
+      .text(`Hash: ${certMeta.hash || "gerando..."}`, { align: "center" });
+
+    // === Glow decorativo ===
+    doc.circle(80, 760, 4).fill("#00eaff");
+    doc.circle(515, 760, 4).fill("#00eaff");
+
     doc.end();
 
-    stream.on('finish', ()=>{
-      resolve();
-    });
-    stream.on('error', (err)=> reject(err));
+    stream.on("finish", () => resolve());
+    stream.on("error", (err) => reject(err));
   });
 }
 
@@ -166,3 +243,4 @@ app.get('/certificados/verificar/:hash', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=> console.log('Servidor rodando em http://localhost:'+PORT));
+
