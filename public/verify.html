@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Verificação de Certificado</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/verify.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="bg">
+    <div class="glass card shadow-lg">
+      <header class="d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex align-items-center gap-3">
+          <img src="/img/logo.svg" class="logo" alt="Logo">
+          <div>
+            <div class="brand">Certificados Digitais</div>
+            <div class="muted">Verificação pública de autenticidade</div>
+          </div>
+        </div>
+        <span id="statusBadge" class="badge rounded-pill text-bg-secondary">Carregando...</span>
+      </header>
+
+      <h1 class="title mb-3">Verificação de Certificado</h1>
+      <p class="muted mb-4">Confira abaixo os dados do certificado e valide a autenticidade pelo hash/ID.</p>
+
+      <div class="row g-4">
+        <div class="col-12 col-lg-7">
+          <div class="info">
+            <div class="row"><div class="col-5 label">Aluno</div><div class="col-7 value" id="alunoNome">—</div></div>
+            <div class="row"><div class="col-5 label">Atividade</div><div class="col-7 value" id="atividadeNome">—</div></div>
+            <div class="row"><div class="col-5 label">Carga Horária</div><div class="col-7 value" id="carga">—</div></div>
+            <div class="row"><div class="col-5 label">Data</div><div class="col-7 value" id="data">—</div></div>
+            <div class="row"><div class="col-5 label">Responsável</div><div class="col-7 value" id="responsavel">—</div></div>
+
+            <div class="hr my-3"></div>
+            <div class="row align-items-center">
+              <div class="col-12 col-md-9">
+                <div class="mono small">ID: <span id="id">—</span></div>
+                <div class="mono small">Hash: <span id="hash">—</span></div>
+              </div>
+              <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
+                <a class="btn btn-primary" id="btnDownload" href="#" target="_blank" rel="noopener">Baixar PDF</a>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-outline-secondary btn-sm" id="btnCopyLink">Copiar link</button>
+              <button class="btn btn-outline-secondary btn-sm" id="btnCopyHash">Copiar hash</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5 text-center">
+          <img id="qr" class="qr shadow-sm" alt="QR Code">
+          <div class="muted small mt-2">Escaneie para abrir esta mesma página.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/verify.js"></script>
+</body>
+</html>
