@@ -7,25 +7,27 @@ module.exports = function(getBaseUrl) {
 
   
   router.get('/qr/:idOrHash', async (req, res) => {
-    try {
-      const idOrHash = req.params.idOrHash;
-      const base = getBaseUrl(req);
-   
-      const verifyUrl = `${base}/certificados/verificar/${idOrHash}`;
+  try {
+    const idOrHash = req.params.idOrHash;
+    const base = getBaseUrl(req);  
 
-      const png = await QRCode.toBuffer(verifyUrl, {
-        type: 'png',
-        errorCorrectionLevel: 'M',
-        scale: 8,
-        margin: 1
-      });
-      res.set('Content-Type', 'image/png');
-      res.send(png);
-    } catch (err) {
-      console.error('QR generation error:', err);
-      res.status(500).json({ error: 'Falha ao gerar QR Code' });
-    }
-  });
+    const verifyUrl = `${base}/certificados/verificar/${idOrHash}`;
+
+    const png = await QRCode.toBuffer(verifyUrl, {
+      type: 'png',
+      errorCorrectionLevel: 'M',
+      scale: 8,
+      margin: 1
+    });
+
+    res.set('Content-Type', 'image/png');
+    res.send(png);
+  } catch (err) {
+    console.error('Erro ao gerar QR Code:', err);
+    res.status(500).json({ error: 'Falha ao gerar QR Code' });
+  }
+});
+
 
  
   router.get('/verification-link/:idOrHash', async (req, res) => {

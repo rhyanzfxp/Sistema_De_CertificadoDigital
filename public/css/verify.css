@@ -16,8 +16,22 @@ body{margin:0;font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;col
 .muted{color:var(--muted)}
 .title{font-weight:800;letter-spacing:.2px;color:var(--primary-dark)}
 .info .row{margin-bottom:10px}
-.label{color:var(--muted)}
-.value{font-weight:600}
+
+
+.label{
+   
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.value{
+    
+    color: #ffffff; 
+    font-weight: 700; 
+    font-size: 16px; 
+}
+
+
 .hr{height:1px;background:var(--hr);opacity:.6}
 .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
 .qr{max-width:220px;border-radius:12px;padding:10px;background:#fff}

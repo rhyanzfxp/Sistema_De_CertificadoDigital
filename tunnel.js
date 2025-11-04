@@ -1,31 +1,31 @@
-import localtunnel from "localtunnel";
-import { spawn } from "child_process";
+import ngrok from 'ngrok';  
+import { spawn } from 'child_process';
 
 const PORT = 3000;
 
 (async () => {
-  console.log("⏳ Iniciando túnel LocalTunnel...");
+  console.log("⏳ Iniciando túnel Ngrok...");
 
-  
-  const tunnel = await localtunnel({ port: PORT });
 
-  console.log(`✅ Túnel aberto: ${tunnel.url}`);
-  console.log(`🌍 BASE_URL_EXTERNA = ${tunnel.url}`);
+  const url = await ngrok.connect(PORT);
 
- 
+  console.log(`✅ Túnel aberto: ${url}`);
+  console.log(`🌍 BASE_URL_EXTERNA = ${url}`);
+
+
   const server = spawn("node", ["app.js"], {
     env: {
       ...process.env,
-      BASE_URL_EXTERNA: tunnel.url,
+      BASE_URL_EXTERNA: url,  
     },
     stdio: "inherit",
     shell: true,
   });
 
-  
+ 
   process.on("SIGINT", () => {
     console.log("\n🛑 Encerrando túnel e servidor...");
-    tunnel.close();
+    ngrok.disconnect();  
     server.kill();
     process.exit(0);
   });
