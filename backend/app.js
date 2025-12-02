@@ -6,6 +6,7 @@ const path = require('path');
 const PDFDocument = require('pdfkit');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('./utils/logger');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
@@ -21,6 +22,14 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+    logger.info(`Request received: ${req.method} ${req.originalUrl}`, {
+        ip: req.ip,
+        body: req.body,
+        query: req.query
+    });
+    next();
+});
 // app.use(express.static(path.join(__dirname, 'public'))); // Frontend separado, não precisa servir estáticos aqui
 
 // const getBaseUrl = require('./utils/baseUrl'); // Não é mais necessário, usaremos FRONTEND_URL diretamente
@@ -154,6 +163,7 @@ app.post('/api/certificados/emitir', async (req, res) => {
     
     const novoCertificado = new Certificado(certMeta);
     await novoCertificado.save();
+logger.event('Certificado emitido', { id: certMeta.id, aluno: certMeta.aluno.nome, atividade: certMeta.atividade.nome });
 
    const pdfPath = path.join(CERTS_DIR, `${id}.pdf`);
 await gerarPDF(certMeta, pdfPath);
@@ -186,7 +196,8 @@ certMeta.urlVerificacao = `${basePublic}/certificados/verificar/${hash}`;
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: 'Erro interno ao emitir certificado' });
+    logger.error('Erro interno ao emitir certificado', { error: e.message, stack: e.stack, payload: payload });
+    return res.status(500).json({ error: 'Erro interno ao emitir certificado' });
   }
 });
 
@@ -208,6 +219,9 @@ app.get('/api/certificados/public/:idOrHash', async (req, res) => {
   const certificado = await Certificado.findOne({ $or: [{ id: idOrHash }, { hash: idOrHash }] });
 
   if (!certificado) return res.status(404).json({ error: 'Certificado não encontrado' });
+    if (certificado.status === 'REVOGADO') {
+        logger.event('Certificado revogado acessado', { id: certificado.id, hash: certificado.hash });
+    }
   return res.json(certificado);
 });
 
@@ -243,6 +257,7 @@ app.get('/api/certificados/:id/download', async (req, res) => {
         const cert = await Certificado.findOne({ id: id });
 
         if (!cert) {
+            logger.error('Download falhou: Certificado não encontrado', { id: id });
             console.error(`[DEBUG DOWNLOAD] FALHA: Certificado não encontrado no DB com ID: ${id}`);
             return res.status(404).json({ error: 'Certificado não encontrado' });
         }
@@ -259,6 +274,7 @@ app.get('/api/certificados/:id/download', async (req, res) => {
             // Regenerar o PDF se não for encontrado (comum em ambientes serverless)
             await gerarPDF(cert, pdfPath);
             if (!fs.existsSync(pdfPath)) {
+                logger.error('Download falhou: Falha ao regenerar o PDF', { id: id, pdfPath: pdfPath });
                 console.error(`[DEBUG DOWNLOAD] FALHA: Falha ao regenerar o PDF.`);
                 return res.status(500).json({ error: 'Falha ao gerar o PDF para download' });
             }
@@ -270,18 +286,64 @@ app.get('/api/certificados/:id/download', async (req, res) => {
         res.download(pdfPath, `${id}.pdf`, (err) => {
             if (err) {
               
+                logger.error('Download falhou: Erro ao enviar o arquivo', { id: id, error: err.message });
+              
                 console.error('[DEBUG DOWNLOAD] Erro ao enviar o arquivo (res.download):', err);
             } else {
                 console.log(`[DEBUG DOWNLOAD] Download do arquivo ${id}.pdf enviado com sucesso.`);
             }
         });
     } catch (err) {
+        logger.error('Erro interno na rota de download', { id: id, error: err.message, stack: err.stack });
         console.error('[DEBUG DOWNLOAD] Erro interno na rota de download:', err);
         return res.status(500).json({ error: 'Erro ao realizar o download do PDF' });
     }
 });
 
 
+
+// Rota para revogar um certificado
+app.post('/api/certificados/:id/revogar', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const cert = await Certificado.findOne({ id: id });
+        if (!cert) {
+            logger.error('Tentativa de revogar certificado não encontrado', { id: id });
+            return res.status(404).json({ error: 'Certificado não encontrado' });
+        }
+
+        if (cert.status === 'REVOGADO') {
+            return res.status(200).json({ message: 'Certificado já está revogado' });
+        }
+
+        cert.status = 'REVOGADO';
+        await cert.save();
+        
+        logger.event('Certificado revogado', { id: id, hash: cert.hash });
+        
+        // Simulação de Webhook/Notificação
+        notificarMudancaStatus(cert);
+
+        return res.status(200).json({ message: 'Certificado revogado com sucesso', status: 'REVOGADO' });
+
+    } catch (e) {
+        logger.error('Erro ao revogar certificado', { id: id, error: e.message, stack: e.stack });
+        return res.status(500).json({ error: 'Erro interno ao revogar certificado' });
+    }
+});
+
+// Função de simulação de notificação (Webhook)
+function notificarMudancaStatus(certificado) {
+    // Em um cenário real, esta função faria uma requisição HTTP POST para um endpoint de webhook
+    // Aqui, apenas logamos a notificação.
+    logger.event('Notificação de Webhook (Simulação)', {
+        tipo: 'status_change',
+        id: certificado.id,
+        status: certificado.status,
+        timestamp: new Date().toISOString()
+    });
+    console.log(`[WEBHOOK SIMULADO] Notificação enviada para o certificado ${certificado.id} com status ${certificado.status}`);
+}
 
 // A rota de verificação agora é responsabilidade do Frontend (Vercel)
 // app.get('/certificados/verificar/:idOrHash', (req, res) => {

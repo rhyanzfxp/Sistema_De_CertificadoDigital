@@ -11,8 +11,38 @@
       if(!res.ok) throw new Error();
       const c = await res.json();
 
+      // Habilitar botão de revogação (apenas para demonstração)
+      const btnRevogar = $('btnRevogar');
+      if (c.status !== 'REVOGADO') {
+        btnRevogar.style.display = 'inline-block';
+        btnRevogar.addEventListener('click', async () => {
+          if (confirm('Tem certeza que deseja revogar este certificado? Esta ação é irreversível.')) {
+            try {
+              const revogarRes = await fetch(window.BACKEND_URL + `/api/certificados/${c.id}/revogar`, { method: 'POST' });
+              if (revogarRes.ok) {
+                alert('Certificado revogado com sucesso!');
+                load(); // Recarrega os dados para atualizar o status
+              } else {
+                const errData = await revogarRes.json();
+                alert(`Falha ao revogar: ${errData.error || 'Erro desconhecido'}`);
+              }
+            } catch (e) {
+              alert('Erro de conexão ao tentar revogar.');
+            }
+          }
+        });
+      } else {
+        btnRevogar.style.display = 'none';
+      }
+
       $('statusBadge').textContent = c.status || 'EMITIDO';
-      $('statusBadge').className = 'badge rounded-pill ' + (c.status==='EMITIDO' ? 'text-bg-success' : 'text-bg-warning');
+      let badgeClass = 'text-bg-warning';
+      if (c.status === 'EMITIDO') {
+        badgeClass = 'text-bg-success';
+      } else if (c.status === 'REVOGADO') {
+        badgeClass = 'text-bg-danger';
+      }
+      $('statusBadge').className = 'badge rounded-pill ' + badgeClass;
 
       $('alunoNome').textContent = c.aluno?.nome || '-';
       $('atividadeNome').textContent = c.atividade?.nome || '-';
