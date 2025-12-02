@@ -167,7 +167,7 @@ if (!fs.existsSync(pdfPath)) {
     certMeta.hash = hash;
     certMeta.status = 'EMITIDO';
 
-    const basePublic = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const basePublic = process.env.FRONTEND_URL || 'https://sistema-de-certificado-digital.vercel.app/';
 certMeta.urlDownload = `${basePublic}/api/certificados/${id}/download`;
 certMeta.urlVerificacao = `${basePublic}/certificados/verificar/${hash}`;
 
