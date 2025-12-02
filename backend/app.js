@@ -98,11 +98,14 @@ async function gerarPDF(certMeta, filePath) {
     const base = envBase.replace(/\/$/, '');
 
  
-    const absoluteDownloadUrl = `${base}/api/certificados/${certMeta.id}/download`;
+    const absoluteVerificationUrl = `${base}/certificados/verificar/${certMeta.hash}`; // URL de verificação para o QR Code
+
+        // Se o hash não estiver disponível, usa a URL de download como fallback (não ideal)
+        const qrContent = certMeta.hash ? absoluteVerificationUrl : `${base}/api/certificados/${certMeta.id}/download`;
 
     try {
       const qrSize = 110;
-      const qrBuffer = await QRCode.toBuffer(absoluteDownloadUrl, {
+      const qrBuffer = await QRCode.toBuffer(qrContent, {
         type: 'png',
         errorCorrectionLevel: 'M',
         margin: 0,
@@ -249,9 +252,16 @@ app.get('/api/certificados/:id/download', async (req, res) => {
        
         const pdfPath = path.join(__dirname, 'certs', `${id}.pdf`);
 
+        
+
         if (!fs.existsSync(pdfPath)) {
-            console.error(`[DEBUG DOWNLOAD] FALHA: Arquivo PDF não encontrado no caminho: ${pdfPath}`);
-            return res.status(404).json({ error: 'Arquivo PDF não encontrado' });
+            console.log(`[DEBUG DOWNLOAD] Arquivo PDF não encontrado no caminho: ${pdfPath}. Regenerando...`);
+            // Regenerar o PDF se não for encontrado (comum em ambientes serverless)
+            await gerarPDF(cert, pdfPath);
+            if (!fs.existsSync(pdfPath)) {
+                console.error(`[DEBUG DOWNLOAD] FALHA: Falha ao regenerar o PDF.`);
+                return res.status(500).json({ error: 'Falha ao gerar o PDF para download' });
+            }
         }
         
         console.log(`[DEBUG DOWNLOAD] SUCESSO: Arquivo PDF encontrado no disco. Enviando...`);

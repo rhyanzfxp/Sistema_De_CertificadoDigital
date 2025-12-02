@@ -26,10 +26,17 @@
       $('btnDownload').href = c.urlDownload;
 
       const ident = c.hash || c.id;
-      // Rota /api/qr removida do backend. O QR Code é gerado no PDF.
-      // $('qr').src = `/api/qr/${encodeURIComponent(ident)}`;
+// Gerar QR Code no frontend
+	      const link = location.origin + `/certificados/verificar/${encodeURIComponent(ident)}`;
+	      const qrCanvas = document.createElement('canvas');
+	      await QRCode.toCanvas(qrCanvas, link, {
+	        errorCorrectionLevel: 'H',
+	        margin: 1,
+	        scale: 8
+	      });
+	      $('qr').src = qrCanvas.toDataURL();
 
-      const link = location.origin + `/certificados/verificar/${encodeURIComponent(ident)}`;
+      
       $('btnCopyLink').addEventListener('click', ()=> copy(link));
       $('btnCopyHash').addEventListener('click', ()=> c.hash && copy(c.hash));
     }catch(e){
