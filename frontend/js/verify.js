@@ -11,7 +11,7 @@
       if(!res.ok) throw new Error();
       const c = await res.json();
 
-      // Habilitar botão de revogação (apenas para demonstração)
+     
       const btnRevogar = $('btnRevogar');
       if (c.status !== 'REVOGADO') {
         btnRevogar.style.display = 'inline-block';
@@ -21,7 +21,7 @@
               const revogarRes = await fetch(window.BACKEND_URL + `/api/certificados/${c.id}/revogar`, { method: 'POST' });
               if (revogarRes.ok) {
                 alert('Certificado revogado com sucesso!');
-                load(); // Recarrega os dados para atualizar o status
+                load(); 
               } else {
                 const errData = await revogarRes.json();
                 alert(`Falha ao revogar: ${errData.error || 'Erro desconhecido'}`);
@@ -56,7 +56,6 @@
       $('btnDownload').href = c.urlDownload;
 
       const ident = c.hash || c.id;
-// Gerar QR Code no frontend
 	      const link = location.origin + `/certificados/verificar/${encodeURIComponent(ident)}`;
 	      const qrCanvas = document.createElement('canvas');
 	      await QRCode.toCanvas(qrCanvas, link, {
