@@ -1,0 +1,12 @@
+{
+  "name": "certificado-digital-frontend",
+  "version": "1.0.0",
+  "description": "Frontend estático para o sistema de certificados",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -c-1 -p 8080"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

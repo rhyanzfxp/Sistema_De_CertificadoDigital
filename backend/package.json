@@ -1,0 +1,28 @@
+{
+  "name": "certificado-digital-example",
+  "version": "1.0.0",
+  "description": "Exemplo mínimo de emissão e recuperação de certificados digitais (Node.js + Express + PDFKit)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^8.19.3",
+    "dotenv": "^16.4.5",
+    "pdfkit": "^0.13.0",
+    "qrcode": "^1.5.4",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
