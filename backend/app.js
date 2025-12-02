@@ -108,9 +108,7 @@ async function gerarPDF(certMeta, filePath) {
 
  
     const absoluteVerificationUrl = `${base}/certificados/verificar/${certMeta.hash}`; // URL de verificação para o QR Code
-
-        // Se o hash não estiver disponível, usa a URL de download como fallback (não ideal)
-        const qrContent = certMeta.hash ? absoluteVerificationUrl : `${base}/api/certificados/${certMeta.id}/download`;
+        const qrContent = certMeta.hash ? absoluteVerificationUrl : `${base}/api/certificados/${certMeta.id}/download`; // Fallback removido, o hash deve estar sempre disponível aqui.
 
     try {
       const qrSize = 110;
@@ -165,9 +163,10 @@ app.post('/api/certificados/emitir', async (req, res) => {
     await novoCertificado.save();
 logger.event('Certificado emitido', { id: certMeta.id, aluno: certMeta.aluno.nome, atividade: certMeta.atividade.nome });
 
-   const pdfPath = path.join(CERTS_DIR, `${id}.pdf`);
-await gerarPDF(certMeta, pdfPath);
+    const pdfPath = path.join(CERTS_DIR, `${id}.pdf`);
 
+
+await gerarPDF(certMeta, pdfPath);
 
 console.log(`Caminho do PDF gerado: ${pdfPath}`);
 if (!fs.existsSync(pdfPath)) {
@@ -179,6 +178,9 @@ if (!fs.existsSync(pdfPath)) {
     const hash = calcularHash(pdfPath);
     certMeta.hash = hash;
     certMeta.status = 'EMITIDO';
+
+
+await gerarPDF(certMeta, pdfPath);;
 
     const baseFrontend = process.env.FRONTEND_URL || 'https://sistema-de-certificado-digital.vercel.app/';
 const baseBackend = process.env.BACKEND_URL || 'https://sistema-de-certificadodigital.onrender.com'; 

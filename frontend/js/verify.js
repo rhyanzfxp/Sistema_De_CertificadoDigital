@@ -56,6 +56,7 @@
       $('btnDownload').href = c.urlDownload;
 
       const ident = c.hash || c.id;
+
 	      const link = location.origin + `/certificados/verificar/${encodeURIComponent(ident)}`;
 	      const qrCanvas = document.createElement('canvas');
 	      await QRCode.toCanvas(qrCanvas, link, {
